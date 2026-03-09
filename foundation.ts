@@ -3,21 +3,28 @@
 */
 //% weight=60 color=#fcba03 icon="\uf0e3"
 namespace Foundation {
-    export enum presets {
-        DEFAULT
-    }
-
     /**
      * Applies a preset flag list, in case you can't be asked to make your own.
      * @param preset The Flag preset.
      */
     //% block
-    export function flagPresets(preset: presets): SpriteFlag[] {
+    export function applyFlagPreset(preset: sprites.flagPresets): SpriteFlag[] {
         const builtFlags: SpriteFlag[] = [];
         Foundation.clearArray(builtFlags);
 
-        if (preset == presets.DEFAULT) {
+        if (preset == sprites.flagPresets.DEFAULT) {
             builtFlags.push(SpriteFlag.StayInScreen);
+        }
+
+        if (preset == sprites.flagPresets.COLLISIONLESS) {
+            builtFlags.push(SpriteFlag.Ghost);
+            builtFlags.push(SpriteFlag.GhostThroughSprites);
+            builtFlags.push(SpriteFlag.GhostThroughWalls);
+        }
+
+        if (preset == sprites.flagPresets.CLEARONWALL) {
+            builtFlags.push(SpriteFlag.DestroyOnWall);
+            builtFlags.push(SpriteFlag.AutoDestroy);
         }
 
         return builtFlags;
@@ -82,6 +89,14 @@ namespace Foundation {
         sprite.setFlag(SpriteFlag.GhostThroughTiles, true);
         sprite.setFlag(SpriteFlag.GhostThroughWalls, true);
     });
+}
+
+namespace sprites {
+    export enum flagPresets {
+        DEFAULT,
+        COLLISIONLESS,
+        CLEARONWALL
+    }
 }
 
 namespace SpriteKind {
