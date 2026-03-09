@@ -1,6 +1,7 @@
 /**
 * Foundation blocks
 */
+//% groups='["Builders", "Util"]'
 //% weight=60 color=#fcba03 icon="\uf0e3"
 namespace Foundation {
     /**
@@ -8,10 +9,11 @@ namespace Foundation {
      * @param preset The Flag preset.
      */
     //% block
+    //% group="Util"
     export function applyFlagPreset(preset: sprites.flagPresets): SpriteFlag[] {
         const builtFlags: SpriteFlag[] = [];
-        Foundation.clearArray(builtFlags);
-
+        clearArray(builtFlags);
+        
         if (preset == sprites.flagPresets.DEFAULT) {
             builtFlags.push(SpriteFlag.StayInScreen);
         }
@@ -30,15 +32,30 @@ namespace Foundation {
         return builtFlags;
     }
 
-
     /**
      * Clears an array of every element it contains.
      * @param array The array to clear.
      */
     //% block
+    //% group="Util"
     export function clearArray(array: any[]) {
         for (let value of array) {
             array.removeElement(value);
+        }
+    }
+
+    /**
+     * Applies every flag in a SpriteFlag array to a Sprite.
+     * @param array The array of SpriteFlags to apply.
+     * @param sprite The Sprite to apply the flags to.
+     */
+    //% block
+    //% group="Util"
+    export function applyFlagsToSprite(array: SpriteFlag[], sprite: Sprite) {
+        if (array != null) {
+            for (let value of array) {
+                sprite.setFlag(value, true);
+            }
         }
     }
 
@@ -51,17 +68,15 @@ namespace Foundation {
      * @param ySpeed The Sprite's Y-Speed.
      */
     //% block
+    //% group="Builders"
     export function buildPlayer(img: Image, kind: number, flags: SpriteFlag[], xSpeed?: number, ySpeed?: number): Sprite {
         const spriteFromBuilder: Sprite = sprites.create(img, kind);
-        for (let value of flags) {
-            spriteFromBuilder.setFlag(value, true);
-        }
+        applyFlagsToSprite(flags, spriteFromBuilder);
         forever(function movementController() {
             controller.moveSprite(spriteFromBuilder, xSpeed, ySpeed);
         });
         return spriteFromBuilder;
     }
-
 
     /**
      * Builds an Enemy sprite from the given fields.
@@ -73,13 +88,26 @@ namespace Foundation {
      * @param turnRate The rate of turning while following the target.
      */
     //% block
+    //% group="Builders"
     export function buildEnemy(img: Image, kind: number, flags: SpriteFlag[], followTarget?: Sprite, followSpeed?: number, turnRate?: number): Sprite {
         const spriteFromBuilder: Sprite = sprites.create(img, kind);
-        for (let value of flags) {
-            spriteFromBuilder.setFlag(value, true);
-        }
+        applyFlagsToSprite(flags, spriteFromBuilder);
 
         spriteFromBuilder.follow(followTarget, followSpeed, turnRate);
+        return spriteFromBuilder;
+    }
+
+    /**
+     * Builds a regular Sprite from the given fields.
+     * @param img The Sprite image.
+     * @param kind The SpriteKind.
+     * @param flags The SpriteFlags to apply to the player.
+     */
+    //% block
+    //% group="Builders"
+    export function buildCommonSprite(img: Image, kind: number, flags: SpriteFlag[]): Sprite {
+        const spriteFromBuilder: Sprite = sprites.create(img, kind);
+        applyFlagsToSprite(flags, spriteFromBuilder);
         return spriteFromBuilder;
     }
 
